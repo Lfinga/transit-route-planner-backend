@@ -26,7 +26,7 @@ DEBUG=false
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
-DB_PASSWORD=****** (put your own postgres DB_PASSWORD)
+DB_PASSWORD=****** # put your own postgres DB_PASSWORD
 DB_NAME=route_planner_db
 ```
 
