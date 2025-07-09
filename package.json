@@ -7,6 +7,11 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint",
+    "create:db": "ts-node database/scripts/createDb.ts",
+    "delete:db": "ts-node database/scripts/deleteDb.ts",
+    "reset:db": "npm run delete:db && npm run create:db",
+    "create:seed:db": "npm run reset:db && npm run seed:db",
+    "test:db": "ts-node database/scripts/test.ts",
     "seed:db": "ts-node database/scripts/seeding_routes.ts && ts-node database/scripts/seeding_stops.ts && ts-node database/scripts/seeding_trips.ts && ts-node database/scripts/seeding_trip_stops.ts"
   },
   "keywords": [],

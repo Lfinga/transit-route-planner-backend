@@ -8,6 +8,6 @@ export default function errorHandler(error: unknown, req: Request, res: Response
         return;
     }
 
-
-    res.status(500).json({ error: { message: getErrorMessage(error) || "Internal server error. Please view logs for more details.", status: 500 } });
+    const errorObject = error as { status?: number };
+    res.status(errorObject.status || 500).json({ error: { message: getErrorMessage(error) || "Internal server error. Please view logs for more details.", status: 500 } });
 };
