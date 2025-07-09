@@ -1,7 +1,6 @@
 import { Pool } from 'pg';
 import { config } from '../../config';
 
-// Mock the pg Pool
 jest.mock('pg', () => {
     const mPool = {
         query: jest.fn(),
@@ -54,7 +53,6 @@ describe('get_next_trips Database Function', () => {
             }
         ];
 
-        // Mock the query response
         (mockPool.query as jest.Mock).mockResolvedValueOnce({
             rows: mockTrips,
             rowCount: mockTrips.length
@@ -62,13 +60,11 @@ describe('get_next_trips Database Function', () => {
 
         const result = await mockPool.query('SELECT * FROM get_next_trips($1, $2)', [1, now]);
 
-        // Verify query was called with correct parameters
         expect(mockPool.query).toHaveBeenCalledWith(
             'SELECT * FROM get_next_trips($1, $2)',
             [1, now]
         );
 
-        // Verify results
         expect(result.rows).toHaveLength(2);
         expect(result.rows[0]).toMatchObject({
             route_name: 'Route 1',
@@ -81,7 +77,6 @@ describe('get_next_trips Database Function', () => {
             trip_notes: 'Express service'
         });
 
-        // Verify ordering
         expect(new Date(result.rows[0].arrival_time).getTime())
             .toBeLessThan(new Date(result.rows[1].arrival_time).getTime());
     });
@@ -89,7 +84,6 @@ describe('get_next_trips Database Function', () => {
     it('should return empty array when no future trips exist', async () => {
         const now = new Date();
 
-        // Mock empty response
         (mockPool.query as jest.Mock).mockResolvedValueOnce({
             rows: [],
             rowCount: 0
@@ -130,7 +124,6 @@ describe('get_next_trips Database Function', () => {
             [1, now]
         );
 
-        // Verify all trips are in order
         for (let i = 0; i < result.rows.length - 1; i++) {
             expect(new Date(result.rows[i].arrival_time).getTime())
                 .toBeLessThan(new Date(result.rows[i + 1].arrival_time).getTime());
@@ -140,7 +133,6 @@ describe('get_next_trips Database Function', () => {
     it('should handle invalid stop_id gracefully', async () => {
         const now = new Date();
 
-        // Mock empty response for invalid stop_id
         (mockPool.query as jest.Mock).mockResolvedValueOnce({
             rows: [],
             rowCount: 0

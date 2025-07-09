@@ -1,6 +1,5 @@
 import { Pool } from "pg";
 import { config } from "../config";
-import { buildStopsQuery } from "../utils";
 
 const pool = new Pool(config.db);
 
@@ -19,6 +18,24 @@ export interface StopsResponse {
     data: Stop[];
 }
 
+function buildStopsQuery(filters: StopFilters): { query: string; params: any[] } {
+    let query = `
+        SELECT id, name, location, created_at 
+        FROM stops
+    `;
+    const queryParams: any[] = [];
+
+    // If name parameter is provided, add WHERE clause for case-insensitive partial match
+    if (filters.name) {
+        query += ` WHERE LOWER(name) LIKE LOWER($1)`;
+        queryParams.push(`%${filters.name}%`);
+    }
+
+    return {
+        query,
+        params: queryParams
+    };
+}
 
 export async function getStops(filters: StopFilters): Promise<StopsResponse> {
     const { query, params } = buildStopsQuery(filters as StopFilters);

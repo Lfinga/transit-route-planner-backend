@@ -5,20 +5,15 @@ const pool = new Pool(config.db);
 
 async function seedTripStops() {
     try {
-        // Get all trips
         const tripsResult = await pool.query('SELECT id FROM trips ORDER BY id');
         const trips = tripsResult.rows;
 
-        // Get all stops
         const stopsResult = await pool.query('SELECT id FROM stops ORDER BY id');
         const stops = stopsResult.rows;
 
-        // For each trip, assign 3 random stops
         for (const trip of trips) {
-            // Shuffle stops and take first 3
             const selectedStops = shuffleArray(stops).slice(0, 3);
 
-            // Create trip_stops entries with sequential timing
             for (let i = 0; i < selectedStops.length; i++) {
                 const tripStopQuery = `
                     INSERT INTO trip_stops 
@@ -43,14 +38,13 @@ async function seedTripStops() {
     }
 }
 
-// Helper function to shuffle array
 function shuffleArray<T>(array: T[]): T[] {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    return newArray;
+    return shuffled;
 }
 
 seedTripStops()

@@ -1,6 +1,5 @@
 import { Pool } from "pg";
 import { config } from "../config";
-import { buildRoutesQuery } from "../utils";
 
 const pool = new Pool(config.db);
 
@@ -22,6 +21,70 @@ export interface PaginationMetadata {
 export interface RoutesResponse {
     data: any[];
     pagination: PaginationMetadata;
+}
+
+interface RouteQueryResult {
+    mainQuery: { query: string; params: any[] };
+    countQuery: { query: string; params: any[] };
+    pageSize: number;
+    pageNum: number;
+}
+
+const DEFAULT_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 100;
+
+export function buildRoutesQuery(filters: RouteFilters): RouteQueryResult {
+    const { type, active, sort, page = '1', limit = String(DEFAULT_PAGE_SIZE) } = filters;
+
+    const pageNum = Math.max(1, parseInt(page));
+    const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
+    const offset = (pageNum - 1) * pageSize;
+
+    let baseWhereClause = "WHERE 1=1";
+    const filterParams: any[] = [];
+    let paramIndex = 1;
+
+    if (type) {
+        baseWhereClause += ` AND type = $${paramIndex}`;
+        filterParams.push(type);
+        paramIndex++;
+    }
+
+    if (active) {
+        baseWhereClause += ` AND active = $${paramIndex}`;
+        filterParams.push(active === 'true');
+        paramIndex++;
+    }
+
+    const countQuery = `SELECT COUNT(*) FROM routes ${baseWhereClause}`;
+    let mainQuery = `SELECT * FROM routes ${baseWhereClause}`;
+
+    if (sort) {
+        const [field, order] = sort.split(':');
+        const validFields = ['id', 'name', 'type'];
+        const validOrders = ['ASC', 'DESC'];
+
+        const sortField = validFields.includes(field) ? field : 'id';
+        const sortOrder = validOrders.includes(order?.toUpperCase()) ? order.toUpperCase() : 'ASC';
+
+        mainQuery += ` ORDER BY ${sortField} ${sortOrder}`;
+    }
+
+    mainQuery += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    const mainQueryParams = [...filterParams, pageSize, offset];
+
+    return {
+        mainQuery: {
+            query: mainQuery,
+            params: mainQueryParams
+        },
+        countQuery: {
+            query: countQuery,
+            params: filterParams
+        },
+        pageSize,
+        pageNum
+    };
 }
 
 export async function getRoutes(params: RouteFilters): Promise<RoutesResponse> {

@@ -1,5 +1,12 @@
 import { Pool } from "pg";
 import { config } from "./config";
 
-export const pool = new Pool(config.db);
+let pool: Pool
+
+export function getPool() {
+    if (!pool) {
+        pool = new Pool(config.db);
+    }
+    return pool;
+}
 

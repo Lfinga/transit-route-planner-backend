@@ -1,5 +1,3 @@
-// create Database
-
 import { Pool } from "pg";
 import { config } from "../../src/config";
 import fs from "fs";

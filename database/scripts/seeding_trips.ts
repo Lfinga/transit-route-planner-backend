@@ -5,13 +5,10 @@ const pool = new Pool(config.db);
 
 async function seedTrips() {
     try {
-        // First get the route IDs
         const routesResult = await pool.query('SELECT id FROM routes ORDER BY id');
         const routes = routesResult.rows;
 
-        // Create trips for each route
         for (const route of routes) {
-            // Create two trips for this route
             const tripsQuery = `
                 INSERT INTO trips (route_id, departure_time, arrival_time, notes) VALUES 
                 ($1, NOW() + interval '1 hour', NOW() + interval '2 hours', 'Morning trip ${route.id}'),

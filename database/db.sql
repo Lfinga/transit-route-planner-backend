@@ -22,7 +22,6 @@ CREATE TABLE trips (
     arrival_time TIMESTAMP WITH TIME ZONE NOT NULL,
     notes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    -- Add constraint to ensure arrival time is after departure time
     CONSTRAINT valid_trip_times CHECK (arrival_time > departure_time)
 );
 
@@ -34,20 +33,17 @@ CREATE TABLE trip_stops (
     arrival_time TIMESTAMP WITH TIME ZONE NOT NULL,
     departure_time TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    -- Composite primary key
     PRIMARY KEY (trip_id, stop_id),
-    -- Ensure departure time is after arrival time
     CONSTRAINT valid_stop_times CHECK (departure_time >= arrival_time),
-    -- Ensure stop_sequence is positive
     CONSTRAINT valid_sequence CHECK (stop_sequence > 0)
 );
 
 -- Create essential indexes for optimal query performance
-CREATE INDEX idx_trips_route_id ON trips(route_id);                           
-CREATE INDEX idx_trip_stops_trip_id ON trip_stops(trip_id);                  
-CREATE INDEX idx_stops_name_lower ON stops(LOWER(name));           
-CREATE INDEX idx_routes_type_active ON routes(type, active);                 
-CREATE INDEX idx_trip_stops_stop_arrival ON trip_stops(stop_id, arrival_time);  
+CREATE INDEX idx_trips_route_id ON trips(route_id);
+CREATE INDEX idx_trip_stops_trip_id ON trip_stops(trip_id);
+CREATE INDEX idx_stops_name_lower ON stops(LOWER(name));
+CREATE INDEX idx_routes_type_active ON routes(type, active);
+CREATE INDEX idx_trip_stops_stop_arrival ON trip_stops(stop_id, arrival_time);
 
 -- Create function to get next trips for a stop
 CREATE OR REPLACE FUNCTION get_next_trips(stop_id INT, from_time TIMESTAMP WITH TIME ZONE)
