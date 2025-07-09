@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const config = {
+    env: process.env.NODE_ENV || 'development',
     port: process.env.PORT || 3000,
+    debug: process.env.DEBUG === 'true',
     db: {
         host: process.env.DB_HOST || 'localhost',
         port: parseInt(process.env.DB_PORT || '5432', 10),
