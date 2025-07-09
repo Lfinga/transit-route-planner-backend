@@ -1,18 +1,10 @@
 import { Request, Response } from "express";
-import { pool } from "../../../db";
+import { getRoutesPopularity } from "../../../repository/reports";
 
-export const getRoutesPopularity = async (req: Request, res: Response) => {
+export const getRoutesPopularityReport = async (req: Request, res: Response) => {
+    const result = await getRoutesPopularity();
+    res.json({
+        data: result
+    });
 
-    const query = `
-        SELECT
-            r.name as route_name,
-            COUNT(t.id) as total_trips
-        FROM routes r
-        JOIN trips t ON t.route_id = r.id
-        GROUP BY r.name
-        ORDER BY total_trips DESC
-    `;
-
-    const result = await pool.query(query);
-    res.json(result.rows);
 };

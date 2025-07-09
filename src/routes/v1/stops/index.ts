@@ -1,8 +1,8 @@
 import express, { Router } from "express";
-import { getStops } from "./controller";
+import { listStops } from "./controller";
 
 const stops: Router = express.Router();
 
-stops.get("/search", getStops);
+stops.get("/search", listStops);
 
 export default stops;

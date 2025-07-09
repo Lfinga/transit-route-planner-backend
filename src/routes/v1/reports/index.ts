@@ -1,8 +1,8 @@
 import express, { Router } from "express";
-import { getRoutesPopularity } from "./controller";
+import { getRoutesPopularityReport } from "./controller";
 
 const report: Router = express.Router();
 
-report.get("/routes/popularity", getRoutesPopularity);
+report.get("/routes/popularity", getRoutesPopularityReport);
 
 export default report;
