@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { config } from '../config';
+import { config } from '../../src/config';
 
 const pool = new Pool(config.db);
 
@@ -9,8 +9,8 @@ async function seedRoutes() {
             INSERT INTO routes (name, type, active) VALUES 
             ('Red Line', 'train', true),
             ('Blue Line', 'train', true),
-            ('Green Line', 'train', true),
-            ('Yellow Line', 'train', true);
+            ('Green Path', 'bus', true),
+            ('Yellow Path', 'bus', true);
         `;
 
         const result = await pool.query(routesQuery);

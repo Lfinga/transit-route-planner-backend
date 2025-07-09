@@ -7,7 +7,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint",
-    "seed:db": "ts-node src/scripts/seeding_routes.ts && ts-node src/scripts/seeding_stops.ts && ts-node src/scripts/seeding_trips.ts && ts-node src/scripts/seeding_trip_stops.ts"
+    "seed:db": "ts-node database/scripts/seeding_routes.ts && ts-node database/scripts/seeding_stops.ts && ts-node database/scripts/seeding_trips.ts && ts-node database/scripts/seeding_trip_stops.ts"
   },
   "keywords": [],
   "author": "",
