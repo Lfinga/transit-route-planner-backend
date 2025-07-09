@@ -4,6 +4,6 @@ import { listRoutes, getRouteStops } from "./controller";
 const routes: Router = express.Router();
 
 routes.get("/", listRoutes);
-routes.get("/:id/stops", getRouteStops as RequestHandler);
+routes.get("/:id/stops", getRouteStops);
 
 export default routes;

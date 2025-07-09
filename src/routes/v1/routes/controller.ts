@@ -49,7 +49,7 @@ export const listRoutes = async (req: Request, res: Response) => {
     }
 
     // Get total count for pagination metadata
-    const countQuery = query.replace("SELECT *", "SELECT COUNT(*)");
+    const countQuery = "SELECT COUNT(*) FROM routes";
     const totalCountResult = await pool.query(countQuery, params);
     const totalCount = parseInt(totalCountResult.rows[0].count);
 
@@ -94,9 +94,10 @@ export const getRouteStops = async (req: Request, res: Response) => {
     const routeStops = await pool.query(query, [id]);
 
     if (routeStops.rows.length === 0) {
-        return res.status(404).json({
+        res.status(404).json({
             error: 'No stops found for this route or route does not exist'
         });
+        return;
     }
 
     res.json({
