@@ -1,10 +1,8 @@
 import { Pool } from "pg";
 import { config } from "../config";
+import { buildRoutesQuery } from "../utils";
 
 const pool = new Pool(config.db);
-
-const DEFAULT_PAGE_SIZE = 10;
-const MAX_PAGE_SIZE = 100;
 
 export interface RouteFilters {
     type?: string;
@@ -27,58 +25,14 @@ export interface RoutesResponse {
 }
 
 export async function getRoutes(params: RouteFilters): Promise<RoutesResponse> {
-    const { type, active, sort, page = '1', limit = String(DEFAULT_PAGE_SIZE) } = params;
-
-    // Validate and parse pagination params
-    const pageNum = Math.max(1, parseInt(page));
-    const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
-    const offset = (pageNum - 1) * pageSize;
-
-    // Build query with parameters
-    let baseWhereClause = "WHERE 1=1";
-    const queryParams: any[] = [];
-    let paramIndex = 1;
-
-    // Add type filter if provided
-    if (type) {
-        baseWhereClause += ` AND type = $${paramIndex}`;
-        queryParams.push(type);
-        paramIndex++;
-    }
-
-    // Add active filter if provided
-    if (active) {
-        baseWhereClause += ` AND active = $${paramIndex}`;
-        queryParams.push(active === 'true');
-        paramIndex++;
-    }
+    const { mainQuery, countQuery, pageSize, pageNum } = buildRoutesQuery(params);
 
     // Get total count for pagination metadata
-    const countQuery = `SELECT COUNT(*) FROM routes ${baseWhereClause}`;
-    const totalCountResult = await pool.query(countQuery, queryParams);
+    const totalCountResult = await pool.query(countQuery.query, countQuery.params);
     const totalCount = parseInt(totalCountResult.rows[0].count);
 
-    // Build the main query
-    let query = `SELECT * FROM routes ${baseWhereClause}`;
-
-    // Add sorting with validation
-    if (sort) {
-        // Validate sort parameter format (field:order)
-        const [field, order] = sort.split(':');
-        const validFields = ['id', 'name', 'type'];
-        const validOrders = ['ASC', 'DESC'];
-
-        const sortField = validFields.includes(field) ? field : 'id';
-        const sortOrder = validOrders.includes(order?.toUpperCase()) ? order.toUpperCase() : 'ASC';
-
-        query += ` ORDER BY ${sortField} ${sortOrder}`;
-    }
-
-    // Add pagination
-    query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-    queryParams.push(pageSize, offset);
-
-    const routes = await pool.query(query, queryParams);
+    // Execute main query
+    const routes = await pool.query(mainQuery.query, mainQuery.params);
 
     return {
         data: routes.rows,
