@@ -13,10 +13,7 @@ export const createServer = () => {
     .use(express.json())
     .use(
       cors({
-        origin: [
-          "https://transit-route-planner-alb-1279243436.ca-central-1.elb.amazonaws.com",
-          "http://transit-route-planner-alb-1279243436.ca-central-1.elb.amazonaws.com",
-        ],
+        origin: true,
         credentials: true,
       }),
     );
