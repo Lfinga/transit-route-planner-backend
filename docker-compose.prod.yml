@@ -15,7 +15,6 @@ services:
       - DB_NAME=transit_route_planner
     depends_on:
       - db
-    command: sh -c "npm run create:seed:db && npm start"
 
   db:
     image: postgres:16-alpine
