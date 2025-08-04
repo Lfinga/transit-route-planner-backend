@@ -4,7 +4,7 @@ services:
   app:
     image: 074360085669.dkr.ecr.ca-central-1.amazonaws.com/transit-route-planner-backend:latest
     ports:
-      - "3000:3000"
+      - "80:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
