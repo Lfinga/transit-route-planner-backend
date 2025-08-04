@@ -1,11 +1,11 @@
-import { Pool } from 'pg';
-import { config } from '../../src/config';
+import { Pool } from "pg";
+import { config } from "../../src/config";
 
 const pool = new Pool(config.db);
 
 async function seedStops() {
-    try {
-        const stopsQuery = `
+  try {
+    const stopsQuery = `
             INSERT INTO stops (name, location) VALUES 
             ('Central Station', '40.7128,-74.0060'),
             ('Downtown', '40.7139,-74.0070'),
@@ -19,18 +19,18 @@ async function seedStops() {
             ('Williamsburg Station', '40.7198,-73.9550')
             `;
 
-        const result = await pool.query(stopsQuery);
-        console.log('Stops seeded successfully:', result.rows);
-        return result.rows;
-    } catch (error) {
-        console.error('Error seeding stops:', error);
-        throw error;
-    }
+    const result = await pool.query(stopsQuery);
+    console.log("Stops seeded successfully:", result.rows);
+    return result.rows;
+  } catch (error) {
+    console.error("Error seeding stops:", error);
+    throw error;
+  }
 }
 
 seedStops()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error('Failed to seed stops:', error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error("Failed to seed stops:", error);
+    process.exit(1);
+  });
