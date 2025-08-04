@@ -1,5 +1,5 @@
-import { buildStopsQuery } from "../utils";
 import { StopFilters } from "../repository/stops";
+import { buildStopsQuery } from "../utils";
 
 // Helper function to normalize SQL whitespace
 function normalizeSQL(sql: string): string {

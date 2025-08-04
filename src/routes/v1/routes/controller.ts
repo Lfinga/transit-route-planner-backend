@@ -3,6 +3,7 @@ import { getRoutes, getRouteStopsById } from "../../../repository/routes";
 
 export const listRoutes = async (req: Request, res: Response) => {
     const result = await getRoutes(req.query);
+    console.log(result);
     res.json(result);
 };
 

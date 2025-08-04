@@ -10,9 +10,26 @@ export const createServer = () => {
         .use(morgan("dev"))
         .use(express.urlencoded({ extended: true }))
         .use(express.json())
-        .use(cors());
+        .use(cors({
+            origin: [
+                "https://transit-route-planner-alb-1279243436.ca-central-1.elb.amazonaws.com",
+                "http://transit-route-planner-alb-1279243436.ca-central-1.elb.amazonaws.com"
+            ],
+            credentials: true
+        }));
 
     app.use("/api/v1", v1);
+
+    app.get("/health", (req, res) => {
+        res.status(200).json({
+            status: "healthy",
+            timestamp: new Date().toISOString()
+        });
+    });
+
+    app.get("/", (req, res) => {
+        res.send("Hello World");
+    });
     app.use(errorHandler);
     return app;
 }
