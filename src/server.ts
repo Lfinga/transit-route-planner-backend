@@ -31,7 +31,7 @@ export const createServer = () => {
   });
 
   app.get("/", (req, res) => {
-    res.send("Hello World");
+    res.send("Hello Worlddd");
   });
   app.use(errorHandler);
   return app;
