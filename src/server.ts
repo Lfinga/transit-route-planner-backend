@@ -8,9 +8,19 @@ export const createServer = () => {
   const app = express();
   app
     .disable("x-powered-by")
-    .use(morgan(':method :url :status :res[content-length] - :response-time ms | Origin: :req[origin] | Referer: :req[referer]'))
+    .use(
+      morgan(
+        ":method :url :status :res[content-length] - :response-time ms | Origin: :req[origin] | Referer: :req[referer]",
+      ),
+    )
     .use(express.urlencoded({ extended: true }))
     .use(express.json())
+    .use(
+      cors({
+        origin: true,
+        credentials: true,
+      }),
+    );
 
   app.use("/api/v1", v1);
 
