@@ -17,7 +17,12 @@ export const createServer = () => {
     .use(express.json())
     .use(
       cors({
-        origin: true,
+        origin: [
+          "https://transit-route-planner-alb-1279243436.ca-central-1.elb.amazonaws.com",
+          "http://transit-route-planner-alb-1279243436.ca-central-1.elb.amazonaws.com",
+          "https://dhi46ykz6r0q0.cloudfront.net",
+          "http://dhi46ykz6r0q0.cloudfront.net",
+        ],
         credentials: true,
       }),
     );
